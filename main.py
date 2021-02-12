@@ -6,6 +6,7 @@ import os
 import sys
 from pathlib import Path
 
+
 def remove_black_borders():
     for (dirpath, dirnames, filenames) in walk(input_folder_path.get()):
         print(filenames)
@@ -20,10 +21,12 @@ def remove_black_borders():
             if alg == "grayscale":
                 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 _, thresh = cv2.threshold(gray, 1, 255, cv2.THRESH_BINARY)
-                contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                contours, hierarchy = cv2.findContours(
+                    thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+                )
                 cnt = contours[0]
                 x, y, w, h = cv2.boundingRect(cnt)
-                crop = img[y:y + h, x:x + w]
+                crop = img[y : y + h, x : x + w]
             else:
                 if len(img.shape) == 3:
                     flatImage = np.max(img, 2)
@@ -34,11 +37,13 @@ def remove_black_borders():
                 rows = np.where(np.max(flatImage, 0) > threshold)[0]
                 if rows.size:
                     cols = np.where(np.max(flatImage, 1) > threshold)[0]
-                    crop = img[cols[0]: cols[-1] + 1, rows[0]: rows[-1] + 1]
+                    crop = img[cols[0] : cols[-1] + 1, rows[0] : rows[-1] + 1]
                 else:
                     crop = img[:1, :1]
             relpath = os.path.relpath(dirpath, input_folder_path.get())
-            Path(os.path.join(output_folder_path.get(), relpath)).mkdir(parents=True, exist_ok=True)
+            Path(os.path.join(output_folder_path.get(), relpath)).mkdir(
+                parents=True, exist_ok=True
+            )
             cv2.imwrite(os.path.join(output_folder_path.get(), relpath, file), crop)
 
 
@@ -63,6 +68,7 @@ def browse_button_1():
     filename = filedialog.askdirectory()
     input_folder_path.set(filename)
     print(filename)
+
 
 def browse_button_2():
     filename = filedialog.askdirectory()
